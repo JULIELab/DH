@@ -4,33 +4,37 @@ import os
 
 os.chdir('letters/xml/')
 #with open("../stat.tsv","w") as f:
+letters = []
 for t in os.listdir(os.getcwd()):
-    print('ID:',t.split('.')[0])
+    id = t.split('.')[0]
+    print('ID:',id)
     tree = ET.parse(t)
     root = tree.getroot()
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}teiHeader/{http://www.tei-c.org/ns/1.0}profileDesc/{http://www.tei-c.org/ns/1.0}correspDesc/{http://www.tei-c.org/ns/1.0}correspAction/[@type='sent']/{http://www.tei-c.org/ns/1.0}persName"):
-            #f.write(elem.text)
-            #f.write('\t')
-        print('Absender:',elem.text)
+        sender = elem.text
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}teiHeader/{http://www.tei-c.org/ns/1.0}profileDesc/{http://www.tei-c.org/ns/1.0}correspDesc/{http://www.tei-c.org/ns/1.0}correspAction/[@type='sent']/{http://www.tei-c.org/ns/1.0}placeName"):
-        print('Absendeort:',elem.text)
-    if not elem:
-        print('Absendeort: unbekannt')
+        if not elem:
+            dispatch = 'unbekannt'
+        else:
+            dispatch = elem.text
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}teiHeader/{http://www.tei-c.org/ns/1.0}profileDesc/{http://www.tei-c.org/ns/1.0}correspDesc/{http://www.tei-c.org/ns/1.0}correspAction/[@type='sent']/{http://www.tei-c.org/ns/1.0}date"):
-        print('Datum:',elem.text)
-    if not elem:
-        print('Datum: unbekannt')
+        if not elem:
+            date = 'unbekannt'
+        else:
+            date = elem.text
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}teiHeader/{http://www.tei-c.org/ns/1.0}profileDesc/{http://www.tei-c.org/ns/1.0}correspDesc/{http://www.tei-c.org/ns/1.0}correspAction/[@type='received']/{http://www.tei-c.org/ns/1.0}persName"):
-        print('Empfänger:',elem.text)  
+        recipient = elem.text  
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}teiHeader/{http://www.tei-c.org/ns/1.0}profileDesc/{http://www.tei-c.org/ns/1.0}correspDesc/{http://www.tei-c.org/ns/1.0}correspAction/[@type='received']/{http://www.tei-c.org/ns/1.0}placeName"):
-        print('Empfangsort:',elem.text)
-    if not elem:
-        print('Empfangsort: unbekannt')
+        if not elem:
+            destination = 'unbekannt'
+        else:
+            destination = elem.text
     for elem in root.findall("./{http://www.tei-c.org/ns/1.0}text/{http://www.tei-c.org/ns/1.0}body/{http://www.tei-c.org/ns/1.0}div/{http://www.tei-c.org/ns/1.0}p"):
         print('Inhalt:')
         content = ''
         for i in elem.itertext():
             content+=i
             content+=' '
-        print(content)
+    letter = {'sender':sender,'dispatch':dispatch,'date':date,'recipient':recipient,'destination':destination,'content':content}
+    print(letter)
     print('\n')
